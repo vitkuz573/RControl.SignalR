@@ -1,0 +1,38 @@
+﻿@namespace RControl.Client.Components
+@using RControl.Client.Models;
+
+<div class="ml-4 mt-2">
+    <button class="text-lg font-medium mr-2" @onclick="(() => Item.ToggleExpansion())">
+        <i class="fa @GetIconClass(Item)" />
+    </button>
+
+    <span class="cursor-pointer" @onclick="(() => OnClick.InvokeAsync(Item))">@Item.Name</span>
+
+    @if (Item is Folder folder && folder.Children.Count > 0 && folder.IsExpanded)
+    {
+        foreach (var childItem in folder.Children)
+        {
+            <TreeItemComponent Item="childItem" OnClick="OnClick" />
+        }
+    }
+</div>
+
+@code {
+    [Parameter]
+    public TreeItem Item { get; set; }
+
+    [Parameter]
+    public EventCallback<TreeItem> OnClick { get; set; }
+
+    private string GetIconClass(TreeItem item)
+    {
+        if (item is Folder)
+        {
+            return item.IsExpanded ? "fa-folder-open" : "fa-folder";
+        }
+        else
+        {
+            return "fa-desktop";
+        }
+    }
+}

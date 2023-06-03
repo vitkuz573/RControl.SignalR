@@ -1,6 +1,8 @@
 ﻿@page "/"
 
 @using System.Collections.Generic
+@using RControl.Client.Models
+@using RControl.Client.Components
 
 @inherits LayoutComponentBase
 
@@ -11,52 +13,19 @@
             <div>
                 @foreach (var item in treeItems)
                 {
-                    <div class="ml-4 mt-2">
-                        @if (item.IsFolder)
-                        {
-                            <div>
-                                <button class="text-lg font-medium mr-2" @onclick="(() => ToggleExpansion(item))">
-                                    <i class="fa @GetIconClass(item)"></i>
-                                </button>
-                                <span class="cursor-pointer" @onclick="(() => SelectFolder(item))">@item.Name</span>
-                            </div>
-                            @if (item.Children.Count > 0 && item.IsExpanded)
-                            {
-                                <div class="ml-4 mt-2">
-                                    @foreach (var childItem in item.Children)
-                                    {
-                                        <div class="ml-4 mt-2">
-                                            <div>
-                                                <button class="text-lg font-medium mr-2" @onclick="(() => ToggleExpansion(childItem))">
-                                                    <i class="fa @GetIconClass(childItem)"></i>
-                                                </button>
-                                                <span>@childItem.Name</span>
-                                            </div>
-                                        </div>
-                                    }
-                                </div>
-                            }
-                        }
-                        else
-                        {
-                            <div>
-                                <i class="fa @GetIconClass(item)"></i>
-                                <span>@item.Name</span>
-                            </div>
-                        }
-                    </div>
+                    <TreeItemComponent Item="item" OnClick="SelectItem" />
                 }
             </div>
         </div>
         <div class="w-3/4">
-            <h3 class="text-lg font-bold">@selectedFolder?.Name</h3>
-            @if (selectedFolder != null && selectedFolder.IsFolder)
+            <h3 class="text-lg font-bold">@selectedItem?.Name</h3>
+            @if (selectedItem is Folder selectedFolder)
             {
                 <div class="mt-4">
                     @if (selectedFolder.Children.Count > 0)
                     {
                         <div class="grid grid-cols-2 gap-4">
-                            @foreach (var computer in selectedFolder.Children)
+                            @foreach (var computer in selectedFolder.Children.OfType<Computer>())
                             {
                                 <div class="p-4 bg-white rounded shadow">
                                     <h4 class="text-md font-bold">@computer.Name</h4>
@@ -75,14 +44,14 @@
                     }
                 </div>
             }
-            else if (selectedFolder != null && !selectedFolder.IsFolder)
+            else if (selectedItem is Computer selectedComputer)
             {
                 <div class="p-4 bg-white rounded shadow">
-                    <h4 class="text-md font-bold">@selectedFolder.Name</h4>
-                    <p>@selectedFolder.Description</p>
-                    <p class="mt-2"><strong>IP: </strong>@selectedFolder.IPAddress</p>
+                    <h4 class="text-md font-bold">@selectedComputer.Name</h4>
+                    <p>@selectedComputer.Description</p>
+                    <p class="mt-2"><strong>IP: </strong>@selectedComputer.IPAddress</p>
                     <div class="mt-2">
-                        <img src="@selectedFolder.Screenshot" alt="Computer Screenshot" class="w-full" />
+                        <img src="@selectedComputer.Screenshot" alt="Computer Screenshot" class="w-full" />
                     </div>
                 </div>
             }
@@ -95,58 +64,32 @@
 </div>
 
 @code {
-    public class TreeItem
-    {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public bool IsFolder { get; set; }
-        public bool IsExpanded { get; set; }
-        public List<TreeItem> Children { get; set; }
-        public string IPAddress { get; set; }
-        public string Screenshot { get; set; }
-    }
-
     List<TreeItem> treeItems = new List<TreeItem>
     {
-        new TreeItem
+        new Folder
         {
             Name = "Folder 1",
-            IsFolder = true,
             Children = new List<TreeItem>
             {
-                new TreeItem { Name = "PC 1", IsFolder = false, Description = "Computer 1 description", IPAddress = "192.168.1.1", Screenshot = "/screenshots/pc1.png" },
-                new TreeItem { Name = "PC 2", IsFolder = false, Description = "Computer 2 description", IPAddress = "192.168.1.2", Screenshot = "/screenshots/pc2.png" }
+                new Computer { Name = "PC 1", Description = "Computer 1 description", IPAddress = "192.168.1.1", Screenshot = "/screenshots/pc1.png" },
+                new Computer { Name = "PC 2", Description = "Computer 2 description", IPAddress = "192.168.1.2", Screenshot = "/screenshots/pc2.png" }
             }
         },
-        new TreeItem
+        new Folder
         {
             Name = "Folder 2",
-            IsFolder = true,
             Children = new List<TreeItem>
             {
-                new TreeItem { Name = "PC 3", IsFolder = false, Description = "Computer 3 description", IPAddress = "192.168.1.3", Screenshot = "/screenshots/pc3.png" },
-                new TreeItem { Name = "PC 4", IsFolder = false, Description = "Computer 4 description", IPAddress = "192.168.1.4", Screenshot = "/screenshots/pc4.png" }
+                new Computer { Name = "PC 3", Description = "Computer 3 description", IPAddress = "192.168.1.3", Screenshot = "/screenshots/pc3.png" },
+                new Computer { Name = "PC 4", Description = "Computer 4 description", IPAddress = "192.168.1.4", Screenshot = "/screenshots/pc4.png" }
             }
         }
     };
 
-    TreeItem selectedFolder;
+    TreeItem selectedItem;
 
-    void SelectFolder(TreeItem folder)
+    void SelectItem(TreeItem item)
     {
-        if (folder.IsFolder)
-        {
-            selectedFolder = folder;
-        }
-    }
-
-    void ToggleExpansion(TreeItem item)
-    {
-        item.IsExpanded = !item.IsExpanded;
-    }
-
-    string GetIconClass(TreeItem item)
-    {
-        return item.IsFolder ? (item.IsExpanded ? "fa-folder-open" : "fa-folder") : "fa-desktop";
+        selectedItem = item;
     }
 }
