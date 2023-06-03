@@ -1,10 +1,17 @@
-﻿@namespace RControl.Client.Components
-
-@if (IsVisible)
+﻿@if (IsVisible)
 {
     <div class="absolute z-50 bg-white shadow-lg" style="@Style">
-        <button class="block w-full text-left px-4 py-2 hover:bg-gray-100" @onclick="OnClick">
+        <button class="block w-full text-left px-4 py-2 hover:bg-gray-100" @onclick="OnClickConnect">
             Connect
+        </button>
+        <button class="block w-full text-left px-4 py-2 hover:bg-gray-100" @onclick="OnClickShutdown">
+            Shutdown
+        </button>
+        <button class="block w-full text-left px-4 py-2 hover:bg-gray-100" @onclick="OnClickRestart">
+            Restart
+        </button>
+        <button class="block w-full text-left px-4 py-2 hover:bg-gray-100" @onclick="OnClickExecuteCommand">
+            Execute Command
         </button>
     </div>
 }
@@ -18,4 +25,24 @@
 
     [Parameter]
     public bool IsVisible { get; set; }
+
+    private async Task OnClickConnect()
+    {
+        await OnClick.InvokeAsync("Connect");
+    }
+
+    private async Task OnClickShutdown()
+    {
+        await OnClick.InvokeAsync("Shutdown");
+    }
+
+    private async Task OnClickRestart()
+    {
+        await OnClick.InvokeAsync("Restart");
+    }
+
+    private async Task OnClickExecuteCommand()
+    {
+        await OnClick.InvokeAsync("ExecuteCommand");
+    }
 }
