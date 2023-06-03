@@ -41,16 +41,23 @@
 
     <script>
         let currentDotnetHelper = null;
+        let handleClickOutside = null;
 
         window.setupContextMenu = function (element, dotnetHelper) {
-            currentDotnetHelper?.invokeMethodAsync('HideContextMenu');
+            if (currentDotnetHelper && handleClickOutside) {
+                currentDotnetHelper.invokeMethodAsync('HideContextMenu');
+                document.removeEventListener('click', handleClickOutside);
+                currentDotnetHelper = null;
+            }
+
             currentDotnetHelper = dotnetHelper;
 
-            const handleClickOutside = function (event) {
-                const isContextMenuClicked = element.contains(event.target) || event.target.closest('.context-menu');
-                if (!isContextMenuClicked) {
-                    currentDotnetHelper.invokeMethodAsync('HideContextMenu');
-                    currentDotnetHelper = null;
+            handleClickOutside = function (event) {
+                if (element && typeof element.contains === 'function') {
+                    const isContextMenuClicked = element.contains(event.target) || event.target.closest('.context-menu');
+                    if (!isContextMenuClicked) {
+                        currentDotnetHelper.invokeMethodAsync('HideContextMenu');
+                    }
                 }
             };
 
