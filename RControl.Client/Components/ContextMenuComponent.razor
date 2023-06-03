@@ -1,0 +1,21 @@
+﻿@namespace RControl.Client.Components
+
+@if (IsVisible)
+{
+    <div class="absolute z-50 bg-white shadow-lg" style="@Style">
+        <button class="block w-full text-left px-4 py-2 hover:bg-gray-100" @onclick="OnClick">
+            Connect
+        </button>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string Style { get; set; }
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+    [Parameter]
+    public bool IsVisible { get; set; }
+}

@@ -1,5 +1,7 @@
 ﻿@namespace RControl.Client.Components
-@using RControl.Client.Models;
+@using RControl.Client.Models
+@using System.Text.Json;
+@inject IJSRuntime JS
 
 <div class="ml-4 mt-2">
     <button class="text-lg font-medium mr-2" @onclick="(() => Item.ToggleExpansion())">
@@ -12,8 +14,10 @@
     }
     else
     {
-        <span>@Item.Name</span>
+        <span @ref="spanElement">@Item.Name</span>
     }
+
+    <ContextMenuComponent Style="@contextMenuStyle" IsVisible="@isContextMenuVisible" OnClick="OnContextMenuItemClick" />
 
     @if (Item is Folder folder && folder.Children.Count > 0 && folder.IsExpanded)
     {
@@ -30,6 +34,43 @@
 
     [Parameter]
     public EventCallback<TreeItem> OnClick { get; set; }
+
+    private ElementReference spanElement;
+    private bool isContextMenuVisible = false;
+    private string contextMenuStyle = "";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var dotnetHelper = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("setupContextMenu", spanElement, dotnetHelper);
+        }
+    }
+
+    [JSInvokable]
+    public void ShowContextMenu(JsonElement position)
+    {
+        isContextMenuVisible = false;
+        var x = position.GetProperty("x").GetInt32();
+        var y = position.GetProperty("y").GetInt32();
+        contextMenuStyle = $"top: {y}px; left: {x}px;";
+        isContextMenuVisible = true;
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public void HideContextMenu()
+    {
+        isContextMenuVisible = false;
+        StateHasChanged();
+    }
+
+    private void OnContextMenuItemClick()
+    {
+        isContextMenuVisible = false;
+        // Handle the click on the context menu item
+    }
 
     private string GetIconClass(TreeItem item)
     {

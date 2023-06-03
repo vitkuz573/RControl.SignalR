@@ -38,5 +38,29 @@
     <script src="_framework/blazor.server.js"></script>
 
     <script src="https://unpkg.com/flowbite@1.5.4/dist/flowbite.js"></script>
+
+    <script>
+        let currentDotnetHelper = null;
+
+        window.setupContextMenu = function (element, dotnetHelper) {
+            currentDotnetHelper?.invokeMethodAsync('HideContextMenu');
+            currentDotnetHelper = dotnetHelper;
+
+            const handleClickOutside = function (event) {
+                const isContextMenuClicked = element.contains(event.target) || event.target.closest('.context-menu');
+                if (!isContextMenuClicked) {
+                    currentDotnetHelper.invokeMethodAsync('HideContextMenu');
+                    currentDotnetHelper = null;
+                }
+            };
+
+            document.addEventListener('click', handleClickOutside);
+
+            element.oncontextmenu = function (event) {
+                event.preventDefault();
+                currentDotnetHelper.invokeMethodAsync('ShowContextMenu', { x: event.clientX, y: event.clientY });
+            };
+        };
+    </script>
 </body>
 </html>
