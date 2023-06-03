@@ -1,18 +1,26 @@
-﻿@if (IsVisible)
+﻿@namespace RControl.Client.Components
+
+@if (IsVisible)
 {
     <div class="absolute z-50 bg-white shadow-lg" style="@Style">
-        <button class="block w-full text-left px-4 py-2 hover:bg-gray-100" @onclick="OnClickConnect">
-            Connect
-        </button>
-        <button class="block w-full text-left px-4 py-2 hover:bg-gray-100" @onclick="OnClickShutdown">
-            Shutdown
-        </button>
-        <button class="block w-full text-left px-4 py-2 hover:bg-gray-100" @onclick="OnClickRestart">
-            Restart
-        </button>
-        <button class="block w-full text-left px-4 py-2 hover:bg-gray-100" @onclick="OnClickExecuteCommand">
-            Execute Command
-        </button>
+        <div class="py-2">
+            <button class="block w-full text-left px-4 py-2 hover:bg-gray-100" @onclick="OnClickConnect">
+                <Icon Name="IconName.Link" />
+                <span class="ml-2">Connect</span>
+            </button>
+            <button class="block w-full text-left px-4 py-2 hover:bg-gray-100" @onclick="OnClickShutdown">
+                <Icon Name="IconName.ChevronDown" />
+                <span class="ml-2">Shutdown</span>
+            </button>
+            <button class="block w-full text-left px-4 py-2 hover:bg-gray-100" @onclick="OnClickRestart">
+                <Icon Name="IconName.SyncAlt" />
+                <span class="ml-2">Restart</span>
+            </button>
+            <button class="block w-full text-left px-4 py-2 hover:bg-gray-100" @onclick="OnClickExecuteCommand">
+                <Icon Name="IconName.Code" />
+                <span class="ml-2">Execute Command</span>
+            </button>
+        </div>
     </div>
 }
 
