@@ -21,7 +21,7 @@
 
     @if (Item is Computer computer)
     {
-        <ComputerModal @ref="ComputerModal" Computer="computer" />
+        <ComputerModal Computer="computer" />
     }
 
     @if (Item is Folder folder && folder.Children.Count > 0 && folder.IsExpanded)

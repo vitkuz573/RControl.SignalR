@@ -25,4 +25,12 @@
     public Computer Computer { get; set; }
 
     public Modal ModalRef { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            ModalRef.Show();
+        }
+    }
 }
