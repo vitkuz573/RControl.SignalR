@@ -27,7 +27,7 @@
                         <div class="grid grid-cols-2 gap-4">
                             @foreach (var computer in selectedFolder.Children.OfType<Computer>())
                             {
-                                <div class="p-4 bg-white rounded shadow">
+                                <div class="p-4 bg-white rounded shadow w-full">
                                     <h4 class="text-md font-bold">@computer.Name</h4>
                                     <p>@computer.Description</p>
                                     <p class="mt-2"><strong>IP: </strong>@computer.IPAddress</p>
