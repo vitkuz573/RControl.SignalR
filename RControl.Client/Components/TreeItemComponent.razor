@@ -19,6 +19,11 @@
 
     <ContextMenuComponent Style="@contextMenuStyle" IsVisible="@isContextMenuVisible" OnClick="OnContextMenuItemClick" />
 
+    @if (Item is Computer computer)
+    {
+        <ComputerModal @ref="ComputerModal" Computer="computer" />
+    }
+
     @if (Item is Folder folder && folder.Children.Count > 0 && folder.IsExpanded)
     {
         foreach (var childItem in folder.Children)
@@ -29,6 +34,8 @@
 </div>
 
 @code {
+    private ComputerModal ComputerModal;
+
     [Parameter]
     public TreeItem Item { get; set; }
 
@@ -66,10 +73,14 @@
         StateHasChanged();
     }
 
-    private void OnContextMenuItemClick()
+    private void OnContextMenuItemClick(string command)
     {
         isContextMenuVisible = false;
-        // Handle the click on the context menu item
+
+        if (Item is Computer && command == "Connect")
+        {
+            ComputerModal.ModalRef.Show();
+        }
     }
 
     private string GetIconClass(TreeItem item)

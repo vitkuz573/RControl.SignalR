@@ -1,0 +1,28 @@
+﻿@namespace RControl.Client.Components
+@using RControl.Client.Models
+@using Blazorise
+
+<Modal @ref="ModalRef">
+    <ModalContent>
+        <ModalHeader>
+            <ModalTitle>@Computer?.Name</ModalTitle>
+        </ModalHeader>
+        <ModalBody>
+            <p>@Computer?.Description</p>
+            <p><strong>IP: </strong>@Computer?.IPAddress</p>
+            <div>
+                <img src="@Computer?.Screenshot" alt="Computer Screenshot" />
+            </div>
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="@ModalRef.Hide">Close</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+@code {
+    [Parameter]
+    public Computer Computer { get; set; }
+
+    public Modal ModalRef { get; set; }
+}
